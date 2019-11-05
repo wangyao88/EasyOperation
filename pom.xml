@@ -6,7 +6,7 @@
 
 	<groupId>com.mohan.project</groupId>
 	<artifactId>easy-operation</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>1.0.Final</version>
 	<name>EasyOperation</name>
 	<description>封装Exception处理，专注业务逻辑</description>
 
