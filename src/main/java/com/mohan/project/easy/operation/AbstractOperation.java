@@ -11,8 +11,8 @@ import java.util.Optional;
  */
 public abstract class AbstractOperation<T> implements Operation<T>{
 
-    private final Optional<T> value;
-    private final Optional<Throwable> error;
+    protected Optional<T> value;
+    protected Optional<Throwable> error;
 
     protected AbstractOperation() {
         this.value = Optional.empty();
@@ -49,7 +49,7 @@ public abstract class AbstractOperation<T> implements Operation<T>{
 
     @Override
     public boolean isSuccess() {
-        return this.value.isPresent();
+        return !this.error.isPresent();
     }
 
     @Override

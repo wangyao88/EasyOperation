@@ -13,8 +13,11 @@ import java.util.Optional;
  */
 public final class EasyOperation<T> extends AbstractOperation<T>{
 
-    private final Optional<T> value;
-    private final Optional<Throwable> error;
+    private EasyOperation() {
+        super();
+        this.value = Optional.empty();
+        this.error = Optional.empty();
+    }
 
     private EasyOperation(T value) {
         super();
@@ -28,9 +31,27 @@ public final class EasyOperation<T> extends AbstractOperation<T>{
         this.error = Optional.ofNullable(error);
     }
 
+    public static <T> EasyOperation<T> of(EasyConsumer<T> consumer, T arg) {
+        try {
+            consumer.accept(arg);
+            return new EasyOperation<>();
+        }catch (Throwable throwable) {
+            return new EasyOperation<>(throwable);
+        }
+    }
+
     public static <T> EasyOperation<T> of(EasySupplier<T> supplier) {
         try {
             T result = supplier.get();
+            return new EasyOperation<>(result);
+        }catch (Throwable throwable) {
+            return new EasyOperation<>(throwable);
+        }
+    }
+
+    public static <T, U> EasyOperation<U> of(EasyFunction<T, U> function, T arg) {
+        try {
+            U result = function.apply(arg);
             return new EasyOperation<>(result);
         }catch (Throwable throwable) {
             return new EasyOperation<>(throwable);
