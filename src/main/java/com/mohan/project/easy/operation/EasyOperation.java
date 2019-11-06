@@ -58,6 +58,46 @@ public final class EasyOperation<T> extends AbstractOperation<T>{
         }
     }
 
+    public EasyOperation<T> next(EasyConsumer<T> consumer, T arg) {
+        try {
+            consumer.accept(arg);
+            return new EasyOperation<>();
+        }catch (Throwable throwable) {
+            return new EasyOperation<>(throwable);
+        }
+    }
+
+    public EasyOperation<T> next(EasySupplier<T> supplier) {
+        try {
+            T result = supplier.get();
+            return new EasyOperation<>(result);
+        }catch (Throwable throwable) {
+            return new EasyOperation<>(throwable);
+        }
+    }
+
+    public <U> EasyOperation<U> next(EasyFunction<T, U> function, T arg) {
+        try {
+            U result = function.apply(arg);
+            return new EasyOperation<>(result);
+        }catch (Throwable throwable) {
+            return new EasyOperation<>(throwable);
+        }
+    }
+
+    public <U> EasyOperation<U> next(EasyFunction<T, U> function) {
+        try {
+            Optional<T> valueOptional = this.getValue();
+            if(valueOptional.isPresent()) {
+                U result = function.apply(valueOptional.get());
+                return new EasyOperation<>(result);
+            }
+            return new EasyOperation<>(new ExecuteException("上次操作无返回值，请提供参数"));
+        }catch (Throwable throwable) {
+            return new EasyOperation<>(throwable);
+        }
+    }
+
     public <U> EasyOperation<U> map(EasyFunction<T, U> function) {
         if(fail()) {
             return new EasyOperation<>(this.getError().get());
